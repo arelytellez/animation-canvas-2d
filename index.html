@@ -2,17 +2,53 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="./img/favicon.png" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="./img/favicon.png" type="image/png">
+  <title>POO con Canvas</title>
 
-    <title>POO con Canvas</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+    }
+
+    .controls {
+      margin-bottom: 10px;
+    }
+
+    canvas {
+      display: block;
+      border: 2px solid #333;
+    }
+  </style>
 </head>
 
 <body>
-    <canvas id="canvas"></canvas>
 
-    <script src="js/main.js"></script>
+  <!-- Controles -->
+  <div class="controls">
+    <label for="circleRange">
+      Número de círculos:
+      <strong><span id="circleCount">5</span></strong>
+    </label>
+    <br>
+    <input
+      type="range"
+      id="circleRange"
+      min="1"
+      max="10"
+      value="5"
+    >
+  </div>
+
+  <!-- Canvas -->
+  <canvas id="canvas"></canvas>
+
+  <!-- JS -->
+  <script src="js/main.js"></script>
+
 </body>
-
 </html>

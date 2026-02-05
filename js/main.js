@@ -1,15 +1,17 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-// Tamaño del canvas
+const range = document.getElementById("circleRange");
+const counter = document.getElementById("circleCount");
+
 canvas.width = window.innerWidth / 2;
 canvas.height = window.innerHeight / 2;
 canvas.style.background = "#ff8";
 
 const MARGIN = 10;
-const MAX_CIRCLES = 10;
+let circles = [];
 
-// Función velocidad aleatoria
+// Velocidad aleatoria
 function randomSpeed(min, max) {
   return Math.random() * (max - min) + min;
 }
@@ -23,7 +25,6 @@ class Circle {
     this.text = text;
     this.speed = speed;
 
-    // Dirección inicial aleatoria
     const angle = Math.random() * Math.PI * 2;
     this.dx = Math.cos(angle) * this.speed;
     this.dy = Math.sin(angle) * this.speed;
@@ -45,13 +46,17 @@ class Circle {
   }
 
   update(context) {
-    if (this.posX + this.radius + MARGIN >= canvas.width ||
-        this.posX - this.radius - MARGIN <= 0) {
+    if (
+      this.posX + this.radius + MARGIN >= canvas.width ||
+      this.posX - this.radius - MARGIN <= 0
+    ) {
       this.dx *= -1;
     }
 
-    if (this.posY + this.radius + MARGIN >= canvas.height ||
-        this.posY - this.radius - MARGIN <= 0) {
+    if (
+      this.posY + this.radius + MARGIN >= canvas.height ||
+      this.posY - this.radius - MARGIN <= 0
+    ) {
       this.dy *= -1;
     }
 
@@ -61,24 +66,33 @@ class Circle {
   }
 }
 
-// Número aleatorio de círculos (1 a 10)
-const totalCircles = Math.floor(Math.random() * MAX_CIRCLES) + 1;
-const circles = [];
+// Generar círculos según el slider
+function generateCircles(amount) {
+  circles = [];
 
-// Crear círculos
-for (let i = 0; i < totalCircles; i++) {
-  const radius = Math.floor(Math.random() * 30) + 25;
-  const speed = randomSpeed(1.5, 5);
+  for (let i = 0; i < amount; i++) {
+    const radius = Math.floor(Math.random() * 30) + 25;
+    const speed = randomSpeed(1.5, 5);
 
-  const x = Math.random() * (canvas.width - radius * 2) + radius;
-  const y = Math.random() * (canvas.height - radius * 2) + radius;
+    const x =
+      Math.random() * (canvas.width - radius * 2) + radius;
+    const y =
+      Math.random() * (canvas.height - radius * 2) + radius;
 
-  const color = `hsl(${Math.random() * 360}, 80%, 50%)`;
+    const color = `hsl(${Math.random() * 360}, 80%, 50%)`;
 
-  circles.push(
-    new Circle(x, y, radius, color, i + 1, speed)
-  );
+    circles.push(
+      new Circle(x, y, radius, color, i + 1, speed)
+    );
+  }
 }
+
+// Evento del slider
+range.addEventListener("input", () => {
+  const value = parseInt(range.value);
+  counter.textContent = value;
+  generateCircles(value);
+});
 
 // Animación
 function animate() {
@@ -91,4 +105,6 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
+// Inicializar
+generateCircles(range.value);
 animate();
