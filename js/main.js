@@ -1,15 +1,12 @@
 const canvas = document.getElementById("canvas");
-let ctx = canvas.getContext("2d");
+const ctx = canvas.getContext("2d");
 
-//Obtiene las dimensiones de la pantalla actual
-const window_height = window.innerHeight;
-const window_width = window.innerWidth;
-
-//El canvas tiene las mismas dimensiones que la pantalla
-canvas.height = window_height;
-canvas.width = window_width;
-
+// Tamaño del canvas (se mantiene fijo)
+canvas.width = window.innerWidth / 2;
+canvas.height = window.innerHeight / 2;
 canvas.style.background = "#ff8";
+
+const MARGIN = 10;
 
 class Circle {
   constructor(x, y, radius, color, text, speed) {
@@ -18,89 +15,78 @@ class Circle {
     this.radius = radius;
     this.color = color;
     this.text = text;
-
     this.speed = speed;
 
-    this.dx = 1 * this.speed;
-    this.dy = 1 * this.speed;
+    // Dirección inicial completamente aleatoria
+    const angle = Math.random() * Math.PI * 2;
+    this.dx = Math.cos(angle) * this.speed;
+    this.dy = Math.sin(angle) * this.speed;
   }
 
   draw(context) {
     context.beginPath();
-
     context.strokeStyle = this.color;
+    context.lineWidth = 2;
+    context.arc(this.posX, this.posY, this.radius, 0, Math.PI * 2);
+    context.stroke();
+
+    context.fillStyle = this.color;
     context.textAlign = "center";
     context.textBaseline = "middle";
     context.font = "20px Arial";
     context.fillText(this.text, this.posX, this.posY);
-
-    context.lineWidth = 2;
-    context.arc(this.posX, this.posY, this.radius, 0, Math.PI * 2, false);
-    context.stroke();
     context.closePath();
   }
 
   update(context) {
-    //context.clearRect(0, 0, window_width, window_height);
-
-    this.draw(context);
-
-    //Si el círculo supera el margen derecho entonces se mueve a la izquierda
-    if (this.posX + this.radius > window_width) {
-      this.dx = -this.dx;
+    // Rebote horizontal
+    if (this.posX + this.radius + MARGIN >= canvas.width) {
+      this.posX = canvas.width - this.radius - MARGIN;
+      this.dx *= -1;
+    }
+    if (this.posX - this.radius - MARGIN <= 0) {
+      this.posX = this.radius + MARGIN;
+      this.dx *= -1;
     }
 
-    //Si el círculo supera el margen izquierdo entonces se mueve a la derecha
-    if (this.posX - this.radius < 0) {
-      this.dx = -this.dx;
+    // Rebote vertical
+    if (this.posY + this.radius + MARGIN >= canvas.height) {
+      this.posY = canvas.height - this.radius - MARGIN;
+      this.dy *= -1;
     }
-
-    //Si el círculo supera el margen superior entonces se mueve hacia abajo
-    if (this.posY - this.radius < 0) {
-      this.dy = -this.dy;
-    }
-
-    //Si el círculo supera el margen inferior entonces se mueve hacia arriba
-    if (this.posY + this.radius > window_height) {
-      this.dy = -this.dy;
+    if (this.posY - this.radius - MARGIN <= 0) {
+      this.posY = this.radius + MARGIN;
+      this.dy *= -1;
     }
 
     this.posX += this.dx;
     this.posY += this.dy;
+
+    this.draw(context);
   }
 }
 
-/* let arrayCircle=[];
+// Radios aleatorios al recargar
+const radius1 = Math.floor(Math.random() * 40) + 30;
+const radius2 = Math.floor(Math.random() * 40) + 30;
 
-for(let i=0; i<10;i++){
+// Posiciones iniciales seguras
+const x1 = Math.random() * (canvas.width - radius1 * 2) + radius1;
+const y1 = Math.random() * (canvas.height - radius1 * 2) + radius1;
 
-    let randomX =  Math.random()* window_width;
-    let randomY =  Math.random()* window_height;
-    let randomRadius = Math.floor(Math.random()*100 + 30);
+const x2 = Math.random() * (canvas.width - radius2 * 2) + radius2;
+const y2 = Math.random() * (canvas.height - radius2 * 2) + radius2;
 
-    let miCirculo = new Circle(randomX, randomY, randomRadius, 'blue', i+1);
+// Crear círculos
+const circle1 = new Circle(x1, y1, radius1, "blue", "Tec1", 4);
+const circle2 = new Circle(x2, y2, radius2, "red", "Tec2", 2);
 
-    //Agrega el objeto al array
-    arrayCircle.push(miCirculo);
-    arrayCircle[i].draw(ctx);
-} */
+// Animación
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  circle1.update(ctx);
+  circle2.update(ctx);
+  requestAnimationFrame(animate);
+}
 
-let randomX = Math.random() * window_width;
-let randomY = Math.random() * window_height;
-let randomRadius = Math.floor(Math.random() * 100 + 30);
-
-let miCirculo = new Circle(randomX, randomY, randomRadius, "blue", "Tec1", 5);
-miCirculo.draw(ctx);
-
-let miCirculo2 = new Circle(randomX, randomY, randomRadius, "red", "Tec2", 2);
-miCirculo2.draw(ctx);
-
-let updateCircle = function () {
-  requestAnimationFrame(updateCircle);
-  ctx.clearRect(0, 0, window_width, window_height);
-  miCirculo.update(ctx);
-  miCirculo2.update(ctx);
-};
-
-updateCircle();
-
+animate();
