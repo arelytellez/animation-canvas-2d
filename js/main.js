@@ -1,15 +1,21 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-const range = document.getElementById("circleRange");
-const counter = document.getElementById("circleCount");
+// Controles
+const rangeCircles = document.getElementById("circleRange");
+const circleCount = document.getElementById("circleCount");
 
-canvas.width = window.innerWidth / 2;
-canvas.height = window.innerHeight / 2;
-canvas.style.background = "#ff8";
+const widthRange = document.getElementById("widthRange");
+const heightRange = document.getElementById("heightRange");
+const widthValue = document.getElementById("widthValue");
+const heightValue = document.getElementById("heightValue");
 
 const MARGIN = 10;
 let circles = [];
+
+// Inicializar tamaño del canvas
+canvas.width = widthRange.value;
+canvas.height = heightRange.value;
 
 // Velocidad aleatoria
 function randomSpeed(min, max) {
@@ -66,7 +72,7 @@ class Circle {
   }
 }
 
-// Generar círculos según el slider
+// Generar círculos
 function generateCircles(amount) {
   circles = [];
 
@@ -74,37 +80,46 @@ function generateCircles(amount) {
     const radius = Math.floor(Math.random() * 30) + 25;
     const speed = randomSpeed(1.5, 5);
 
-    const x =
-      Math.random() * (canvas.width - radius * 2) + radius;
-    const y =
-      Math.random() * (canvas.height - radius * 2) + radius;
+    const x = Math.random() * (canvas.width - radius * 2) + radius;
+    const y = Math.random() * (canvas.height - radius * 2) + radius;
 
     const color = `hsl(${Math.random() * 360}, 80%, 50%)`;
 
-    circles.push(
-      new Circle(x, y, radius, color, i + 1, speed)
-    );
+    circles.push(new Circle(x, y, radius, color, i + 1, speed));
   }
 }
 
-// Evento del slider
-range.addEventListener("input", () => {
-  const value = parseInt(range.value);
-  counter.textContent = value;
-  generateCircles(value);
+// Slider número de círculos
+rangeCircles.addEventListener("input", () => {
+  circleCount.textContent = rangeCircles.value;
+  generateCircles(rangeCircles.value);
+});
+
+// Slider ancho
+widthRange.addEventListener("input", () => {
+  canvas.width = widthRange.value;
+  widthValue.textContent = widthRange.value;
+  generateCircles(rangeCircles.value);
+});
+
+// Slider alto
+heightRange.addEventListener("input", () => {
+  canvas.height = heightRange.value;
+  heightValue.textContent = heightRange.value;
+  generateCircles(rangeCircles.value);
 });
 
 // Animación
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  circles.forEach(circle => {
-    circle.update(ctx);
-  });
-
+  circles.forEach(circle => circle.update(ctx));
   requestAnimationFrame(animate);
 }
 
 // Inicializar
-generateCircles(range.value);
+circleCount.textContent = rangeCircles.value;
+widthValue.textContent = widthRange.value;
+heightValue.textContent = heightRange.value;
+
+generateCircles(rangeCircles.value);
 animate();

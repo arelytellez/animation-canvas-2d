@@ -22,33 +22,43 @@
     canvas {
       display: block;
       border: 2px solid #333;
+      background: #ff8;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- Controles -->
   <div class="controls">
-    <label for="circleRange">
+    <!-- Control de círculos -->
+    <label>
       Número de círculos:
       <strong><span id="circleCount">5</span></strong>
-    </label>
-    <br>
-    <input
-      type="range"
-      id="circleRange"
-      min="1"
-      max="10"
-      value="5"
-    >
+    </label><br>
+    <input type="range" id="circleRange" min="1" max="10" value="5">
+
+    <hr>
+
+    <!-- Control de ancho -->
+    <label>
+      Ancho del canvas:
+      <strong><span id="widthValue">400</span> px</strong>
+    </label><br>
+    <input type="range" id="widthRange" min="300" max="800" value="400">
+
+    <br><br>
+
+    <!-- Control de alto -->
+    <label>
+      Alto del canvas:
+      <strong><span id="heightValue">300</span> px</strong>
+    </label><br>
+    <input type="range" id="heightRange" min="200" max="600" value="300">
   </div>
 
-  <!-- Canvas -->
   <canvas id="canvas"></canvas>
 
-  <!-- JS -->
   <script src="js/main.js"></script>
-
 </body>
+
 </html>
